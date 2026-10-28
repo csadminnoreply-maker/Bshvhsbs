@@ -15,22 +15,16 @@ class SmokeTest {
             ModelData("Dots3-Note Preview", 520.00)
         )
         val total = models.sumOf { it.usage }
-        assertEquals(3711.00, total, 0.01)
-    }
-
-    @Test fun modelTertinggiDiAwalSetelahSort() {
-        val models = listOf(
-            ModelData("Qwen3 Coder 30B A3B Instruct", 1450.20),
-            ModelData("gpt-oss-120b", 980.50),
-            ModelData("Laguna XS 2.1", 760.30),
-            ModelData("Dots3-Note Preview", 520.00)
-        )
         val sorted = models.sortedByDescending { it.usage }
-        assertEquals("gpt-oss-120b", sorted[0].name)
-        assertEquals("Dots3-Note Preview", sorted.last.name)
+
+        assertEquals(3711.0, total, 0.01)
+        assertEquals("Qwen3 Coder 30B A3B Instruct", sorted[0].name)
+        assertEquals("Dots3-Note Preview", sorted.last().name)
+        assertEquals(1450.20, sorted[0].usage, 0.01)
+        assertEquals(520.00, sorted.last().usage, 0.01)
     }
 
-    @Test fun persentaseDigunakanSamaDenganTotal100() {
+    @Test fun hitungRataRataUsage() {
         val models = listOf(
             ModelData("Qwen3 Coder 30B A3B Instruct", 1450.20),
             ModelData("gpt-oss-120b", 980.50),
@@ -38,7 +32,19 @@ class SmokeTest {
             ModelData("Dots3-Note Preview", 520.00)
         )
         val total = models.sumOf { it.usage }
-        val persentase = models.map { (it.usage / total) * 100 }.sum()
-        assertEquals(100.0, persentase, 0.01)
+        val rataRata = total / models.size
+        assertEquals(927.75, rataRata, 0.01)
+    }
+
+    @Test fun hitungPerbedaanTertinggiTerendah() {
+        val models = listOf(
+            ModelData("Qwen3 Coder 30B A3B Instruct", 1450.20),
+            ModelData("gpt-oss-120b", 980.50),
+            ModelData("Laguna XS 2.1", 760.30),
+            ModelData("Dots3-Note Preview", 520.00)
+        )
+        val sorted = models.sortedByDescending { it.usage }
+        val selisih = sorted[0].usage - sorted.last().usage
+        assertEquals(930.20, selisih, 0.01)
     }
 }
