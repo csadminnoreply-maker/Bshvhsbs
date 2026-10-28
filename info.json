@@ -1,0 +1,11 @@
+{
+  "name": "UsageAnalyzer",
+  "package": "com.example.usageanalyzer",
+  "type": "android-app",
+  "language": "kotlin",
+  "build": "github-actions (gradle assembleDebug)",
+  "main_dependencies": ["com.android.application 8.5.2", "kotlin-android 1.9.24"],
+  "folders": { "source": "app/src/main/java/com/example/usageanalyzer", "test": "app/src/test/java/com/example/usageanalyzer" },
+  "description": "Aplikasi Android untuk menganalisis dan membandingkan Total Usage ($) model AI berdasarkan data screenshot",
+  "source_data": "Screenshot_20261028-125152.png di attachments/"
+}
