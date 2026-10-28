@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         sb.appendLine("=".repeat(50))
         sb.appendLine("Analisis:")
         sb.appendLine("- Model dengan penggunaan tertinggi: ${sorted[0].name} (${String.format("%.1f%%", sorted[0].usage / total * 100)})")
-        sb.appendLine("- Perbedaan antara tertinggi dan terendah: $%.2f".format(sorted[0].usage - sorted.last.usage))
+        sb.appendLine("- Perbedaan antara tertinggi dan terendah: $%.2f".format(sorted[0].usage - sorted.last().usage))
         sb.appendLine("- Rata-rata penggunaan per model: $%.2f".format(total / models.size))
 
         return sb.toString()
