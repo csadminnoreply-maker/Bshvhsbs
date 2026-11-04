@@ -1,0 +1,67 @@
+name: Build APK
+on:
+  workflow_dispatch:
+    inputs:
+      app_id:
+        description: Application ID
+        required: true
+        default: com.example.myapp
+      app_name:
+        description: Nama aplikasi
+        required: true
+        default: Aplikasi
+      version_code:
+        description: Version code
+        required: true
+        default: "1"
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.7"
+      - name: Keystore tetap (agar APK bisa di-update tanpa uninstall)
+        run: |
+          if [ ! -f signing/app.jks ]; then
+            mkdir -p signing
+            keytool -genkeypair -keystore signing/app.jks -alias main -keyalg RSA -keysize 2048 \
+              -validity 10000 -storepass android123 -keypass android123 -dname "CN=AgenKode"
+            git config user.name "agenkode"
+            git config user.email "agenkode@users.noreply.github.com"
+            git add signing/app.jks
+            git commit -m "Tambah keystore"
+            git push
+          fi
+      - name: Bangun APK
+        env:
+          APP_ID: ${{ inputs.app_id }}
+          APP_NAME: ${{ inputs.app_name }}
+          VER: ${{ inputs.version_code }}
+        run: |
+          KS="$GITHUB_WORKSPACE/signing/app.jks"
+          if [ -f project/settings.gradle.kts ] || [ -f project/settings.gradle ]; then
+            cd project
+            gradle assembleDebug --console=plain
+          else
+            rm -rf build_dir
+            cp -r shell build_dir
+            mkdir -p build_dir/app/src/main/assets/www
+            cp -r project/. build_dir/app/src/main/assets/www/
+            cd build_dir
+            gradle assembleDebug --console=plain \
+              -PappId="$APP_ID" -PappName="$APP_NAME" -PverCode="$VER" -PksFile="$KS"
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: "**/build/outputs/apk/debug/*.apk"
+          if-no-files-found: error

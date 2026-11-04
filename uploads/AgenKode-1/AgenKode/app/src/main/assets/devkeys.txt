@@ -1,0 +1,5 @@
+# KEY UNTUK PENGEMBANGAN SAJA.
+# Dimuat otomatis saat aplikasi dibuka pertama kali (hanya untuk provider yang belum punya key).
+# Provider dikenali dari awalan key. HAPUS file ini sebelum APK dibagikan ke orang lain
+# atau sebelum folder proyek diunggah ke GitHub yang publik.
+# DEVKEYS REMOVED FOR SECURITY
